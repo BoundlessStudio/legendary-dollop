@@ -17,13 +17,19 @@ todosRouter.get('/', (_req, res) => {
 todosRouter.post('/', (req, res) => {
   const { title } = req.body;
 
-  if (!title || typeof title !== 'string') {
+  if (typeof title !== 'string') {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  const trimmedTitle = title.trim();
+
+  if (trimmedTitle.length === 0) {
     return res.status(400).json({ error: 'Title is required' });
   }
 
   const newTodo: Todo = {
     id: todos.length + 1,
-    title,
+    title: trimmedTitle,
     completed: false,
   };
 
