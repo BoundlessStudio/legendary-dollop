@@ -5,11 +5,14 @@ import morgan from 'morgan';
 
 import { env } from './config/env.js';
 import { apiRouter } from './routes/index.js';
+import { openaiWebhookRouter } from './routes/webhooks.js';
 
 const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: env.corsOrigin }));
+app.use('/api/webhooks/openai', express.raw({ type: 'application/json' }), openaiWebhookRouter);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
