@@ -40,10 +40,13 @@ export const useTodosStore = defineStore('todos', {
       }
     },
     async addTodo(title: string) {
-      if (!title.trim()) return;
+      const trimmedTitle = title.trim();
+      if (!trimmedTitle) return;
+      this.error = null;
       try {
-        const created = await createTodo(title.trim());
+        const created = await createTodo(trimmedTitle);
         this.items = [...this.items, created];
+        this.error = null;
       } catch (error) {
         this.error = error instanceof Error ? error.message : 'Failed to create todo';
       }
