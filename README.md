@@ -18,34 +18,26 @@ apps/
    npm install
    ```
 
-2. Start the backend API:
+2. Start the backend and frontend applications:
 
    ```bash
-   npm run dev --workspace backend
-   ```
-
-3. In a separate terminal, start the frontend application:
-
-   ```bash
-   npm run dev --workspace frontend
+   npm run dev
    ```
 
 The frontend expects the backend to run on `http://localhost:4000`.
 
 ## Available Scripts
 
-- `npm run dev --workspace <app>` – Start an app in development mode.
-- `npm run build --workspace <app>` – Build an app for production.
-- `npm run lint --workspace <app>` – Run linting for the specified app (if configured).
-- `npm run start --workspace backend` – Run the backend in production mode.
-
-## Environment Variables
-
-Copy `.env.example` in the relevant workspace to `.env` to customize configuration values. Defaults are provided for local development.
+- `npm run build -w backend && npm run build -w frontend`
+- `concurrently -k -n backend,frontend -c auto \"npm run dev -w backend\" \"npm run dev -w frontend\"`
+- `lint": "npm run lint --workspaces --if-present`
+- `start": "npm run start -w backend`
 
 ## API Overview
 
 - `GET /api/health` – Returns service status and uptime information.
 - `GET /api/todos` – Returns a list of example todos consumed by the Vue application.
+
+## APP Overview
 
 The frontend uses a Pinia store and an Axios-based API client to communicate with the backend.
