@@ -1,19 +1,23 @@
 import { Router } from 'express';
 
+import { containersRouter } from './containers.js';
+import { filesRouter } from './files.js';
 import { healthRouter } from './health.js';
-import { todosRouter } from './todos.js';
 
 export const apiRouter = Router();
 
 apiRouter.use('/health', healthRouter);
-apiRouter.use('/todos', todosRouter);
+apiRouter.use('/files', filesRouter);
+apiRouter.use('/containers', containersRouter);
 
 apiRouter.get('/', (_req, res) => {
   res.json({
     message: 'API root',
     endpoints: {
       health: '/api/health',
-      todos: '/api/todos',
+      files: '/api/files',
+      containers: '/api/containers',
+      webhooks: '/api/webhooks/openai',
     },
   });
 });
