@@ -1,15 +1,13 @@
 import { Router } from 'express';
 
-const startedAt = Date.now();
-
 export const healthRouter = Router();
 
 healthRouter.get('/', (_req, res) => {
-  const uptime = Date.now() - startedAt;
+  const uptimeMs = Math.floor(process.uptime() * 1000);
 
   res.json({
     status: 'ok',
-    uptimeMs: uptime,
+    uptimeMs,
     timestamp: new Date().toISOString(),
   });
 });
