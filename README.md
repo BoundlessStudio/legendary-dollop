@@ -28,10 +28,10 @@ The frontend expects the backend to run on `http://localhost:4000`.
 
 ## Available Scripts
 
-- `npm run build -w backend && npm run build -w frontend`
-- `concurrently -k -n backend,frontend -c auto \"npm run dev -w backend\" \"npm run dev -w frontend\"`
-- `lint": "npm run lint --workspaces --if-present`
-- `start": "npm run start -w backend`
+- `build: npm run build -w backend && npm run build -w frontend`
+- `dev: concurrently -k -n backend,frontend -c auto \"npm run dev -w backend\" \"npm run dev -w frontend\"`
+- `lint": npm run lint --workspaces --if-present`
+- `start": npm run start -w backend`
 
 ## API Overview
 
