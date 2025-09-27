@@ -17,7 +17,6 @@ apiRouter.get('/', (_req, res) => {
       health: '/api/health',
       files: '/api/files',
       containers: '/api/containers',
-      webhooks: '/api/webhooks/openai',
     },
   });
 });

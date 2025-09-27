@@ -11,7 +11,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: env.corsOrigin }));
-app.use('/api/webhooks/openai', express.raw({ type: 'application/json' }), openaiWebhookRouter);
+app.use('/webhooks/openai', express.raw({ type: 'application/json' }), openaiWebhookRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
