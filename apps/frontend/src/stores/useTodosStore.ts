@@ -31,6 +31,7 @@ export const useTodosStore = defineStore('todos', {
       }
     },
     async toggleTodo(id: number, completed: boolean) {
+      this.error = null;
       try {
         const updated = await toggleTodo(id, completed);
         this.items = this.items.map((todo) => (todo.id === id ? updated : todo));
