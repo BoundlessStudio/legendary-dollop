@@ -1,22 +1,14 @@
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 import type { Webhooks } from 'openai/resources/webhooks.js';
-
 import { env } from '../config/env.js';
 import { getOpenAIClient } from '../lib/openaiClient.js';
-
-type SupportedResponseEvent =
-  | Webhooks.ResponseCompletedWebhookEvent
-  | Webhooks.ResponseFailedWebhookEvent
-  | Webhooks.ResponseCancelledWebhookEvent
-  | Webhooks.ResponseIncompleteWebhookEvent;
-
-const SUPPORTED_EVENT_TYPES = new Set<SupportedResponseEvent['type']>([
-  'response.completed',
-  'response.failed',
-  'response.cancelled',
-  'response.incomplete',
-]);
+import { broadcastResponseEvent } from '../lib/websocket.js';
+import {
+  getResponseStatusFromEvent,
+  isResponseWebhookEvent,
+  type ResponseWebhookEvent,
+} from '../lib/openaiWebhookEvents.js';
 
 const parseRawBody = (req: Request): string | undefined => {
   if (typeof req.body === 'string') {
@@ -63,26 +55,22 @@ openaiWebhookRouter.post('/', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Invalid webhook signature' });
   }
 
-  if (!SUPPORTED_EVENT_TYPES.has(event.type as SupportedResponseEvent['type'])) {
+  if (!isResponseWebhookEvent(event)) {
     return res.status(202).json({ status: 'ignored', eventType: event.type });
   }
 
-  switch (event.type) {
-    case 'response.completed':
-    case 'response.failed':
-    case 'response.cancelled':
-    case 'response.incomplete': {
-      const responseId = event.data.id;
-      console.info(`Processed OpenAI webhook event ${event.type} for response ${responseId}`);
+  const responseEvent = event as ResponseWebhookEvent;
+  const responseId = responseEvent.data.id;
+  const status = getResponseStatusFromEvent(responseEvent);
 
-      return res.status(200).json({
-        status: 'received',
-        eventType: event.type,
-        responseId,
-      });
-    }
-    default: {
-      return res.status(202).json({ status: 'ignored', eventType: event.type });
-    }
-  }
+  broadcastResponseEvent(responseEvent);
+
+  console.info(`Processed OpenAI webhook event ${event.type} for response ${responseId}`);
+
+  return res.status(200).json({
+    status: 'received',
+    eventType: event.type,
+    responseId,
+    responseStatus: status,
+  });
 });

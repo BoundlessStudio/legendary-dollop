@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { env } from './config/env.js';
 import { apiRouter } from './routes/index.js';
 import { openaiWebhookRouter } from './routes/webhooks.js';
+import { initializeWebSocketServer, shutdownWebSocketServer } from './lib/websocket.js';
 
 const app = express();
 
@@ -36,7 +37,15 @@ const server = app.listen(env.port, () => {
   console.log(`API server listening on http://localhost:${env.port}`);
 });
 
-process.on('SIGTERM', () => {
+initializeWebSocketServer(server);
+
+process.on('SIGTERM', async () => {
+  try {
+    await shutdownWebSocketServer();
+  } catch (error) {
+    console.error('Failed to gracefully shut down WebSocket server', error);
+  }
+
   server.close(() => {
     console.log('Server gracefully terminated');
   });
