@@ -36,3 +36,24 @@ export const extractStringArray = (value: unknown): string[] | undefined => {
 
   return undefined;
 };
+
+export const extractBoolean = (value: unknown): boolean | undefined => {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  const candidate = extractString(value);
+  if (!candidate) {
+    return undefined;
+  }
+
+  if (candidate.toLowerCase() === 'true') {
+    return true;
+  }
+
+  if (candidate.toLowerCase() === 'false') {
+    return false;
+  }
+
+  return undefined;
+};

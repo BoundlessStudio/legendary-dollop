@@ -164,10 +164,9 @@ containerFilesRouter.post('/', async (req: Request, res: Response, next: NextFun
 containerFilesRouter.get('/:fileId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const client = getOpenAIClient();
-    const file = await client.containers.files.retrieve(
-      req.params.containerId,
-      req.params.fileId,
-    );
+    const file = await client.containers.files.retrieve(req.params.fileId, {
+      container_id: req.params.containerId,
+    });
 
     res.json(file);
   } catch (error) {
@@ -178,10 +177,9 @@ containerFilesRouter.get('/:fileId', async (req: Request, res: Response, next: N
 containerFilesRouter.get('/:fileId/content', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const client = getOpenAIClient();
-    const response = await client.containers.files.content.retrieve(
-      req.params.containerId,
-      req.params.fileId,
-    );
+    const response = await client.containers.files.content.retrieve(req.params.fileId, {
+      container_id: req.params.containerId,
+    });
 
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -199,7 +197,9 @@ containerFilesRouter.get('/:fileId/content', async (req: Request, res: Response,
 containerFilesRouter.delete('/:fileId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const client = getOpenAIClient();
-    await client.containers.files.delete(req.params.containerId, req.params.fileId);
+    await client.containers.files.delete(req.params.fileId, {
+      container_id: req.params.containerId,
+    });
 
     res.status(204).send();
   } catch (error) {
