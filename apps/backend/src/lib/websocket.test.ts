@@ -16,14 +16,20 @@ beforeEach(async () => {
   server = createServer();
 
   await new Promise<void>((resolve, reject) => {
-    server.listen(0, (error?: Error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+    const handleError = (error: Error) => {
+      server.off('listening', handleListening);
+      reject(error);
+    };
 
+    const handleListening = () => {
+      server.off('error', handleError);
       resolve();
-    });
+    };
+
+    server.once('error', handleError);
+    server.once('listening', handleListening);
+
+    server.listen(0);
   });
 
   initializeWebSocketServer(server);
