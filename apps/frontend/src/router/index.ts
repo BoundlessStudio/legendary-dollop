@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const HomeView = () => import('../views/HomeView.vue');
-const TodosView = () => import('../views/TodosView.vue');
 const AboutView = () => import('../views/AboutView.vue');
+const WebsocketTestView = () => import('../views/WebsocketTestView.vue');
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,16 +14,16 @@ export const router = createRouter({
       meta: { title: 'Dashboard' }
     },
     {
-      path: '/todos',
-      name: 'todos',
-      component: TodosView,
-      meta: { title: 'Todos' }
-    },
-    {
       path: '/about',
       name: 'about',
       component: AboutView,
       meta: { title: 'About' }
+    },
+    {
+      path: '/websocket-test',
+      name: 'websocket-test',
+      component: WebsocketTestView,
+      meta: { title: 'WebSocket Test' }
     }
   ]
 });

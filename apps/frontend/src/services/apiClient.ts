@@ -13,28 +13,12 @@ export interface ApiHealthResponse {
   timestamp: string;
 }
 
-export interface ApiTodo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
 export const fetchHealth = async () => {
   const { data } = await apiClient.get<ApiHealthResponse>('/health');
   return data;
 };
 
-export const fetchTodos = async () => {
-  const { data } = await apiClient.get<{ todos: ApiTodo[] }>('/todos');
-  return data.todos;
-};
-
-export const toggleTodo = async (id: number, completed: boolean) => {
-  const { data } = await apiClient.patch<{ todo: ApiTodo }>(`/todos/${id}`, { completed });
-  return data.todo;
-};
-
-export const createTodo = async (title: string) => {
-  const { data } = await apiClient.post<{ todo: ApiTodo }>('/todos', { title });
-  return data.todo;
+export const triggerResponseSimulation = async () => {
+  const { data } = await apiClient.post<{ message: string }>('/responses/simulate-events');
+  return data.message;
 };
