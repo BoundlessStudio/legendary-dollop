@@ -7,6 +7,7 @@ import type {
 import type { InputItemListParams } from 'openai/resources/responses/input-items';
 
 import { getOpenAIClient } from '../lib/openaiClient.js';
+import { broadcastServerEvent } from '../lib/websocket.js';
 import { extractBoolean, extractNumber, extractString, extractStringArray } from './utils.js';
 
 const toResponseRetrieveParams = (query: Request['query']): ResponseRetrieveParamsNonStreaming => {
@@ -84,6 +85,35 @@ responsesRouter.post('/', async (req: Request, res: Response, next: NextFunction
   } catch (error) {
     next(error);
   }
+});
+
+responsesRouter.post('/simulate-events', async (_req: Request, res: Response) => {
+  const EVENT_TYPES = [
+    'response.completed',
+    'response.failed',
+    'response.cancelled',
+    'response.incomplete',
+  ] as const;
+
+  const now = Date.now();
+
+  for (let index = 0; index < 10; index += 1) {
+    const eventType = EVENT_TYPES[index % EVENT_TYPES.length];
+    const responseId = `dummy-${now}-${index + 1}`;
+    const receivedAt = new Date(now + index * 50).toISOString();
+
+    broadcastServerEvent({
+      type: 'response.status',
+      data: {
+        responseId,
+        eventType,
+        status: eventType.replace('response.', ''),
+        receivedAt,
+      },
+    });
+  }
+
+  res.status(202).json({ message: 'Simulated response events dispatched.' });
 });
 
 responsesRouter.get('/:responseId', async (req: Request, res: Response, next: NextFunction) => {

@@ -35,6 +35,10 @@ const broadcast = (payload: ServerEventPayload) => {
   }
 };
 
+export const broadcastServerEvent = (payload: ServerEventPayload) => {
+  broadcast(payload);
+};
+
 export const initializeWebSocketServer = (server: Server) => {
   if (webSocketServer) {
     return webSocketServer;

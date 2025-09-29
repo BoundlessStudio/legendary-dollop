@@ -20,6 +20,7 @@ apiRouter.get('/', (_req, res) => {
       files: '/api/files',
       containers: '/api/containers',
       responses: '/api/responses',
+      responseSimulation: '/api/responses/simulate-events',
     },
   });
 });

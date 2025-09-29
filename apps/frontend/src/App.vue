@@ -4,7 +4,7 @@
       <h1>Legendary Dollop</h1>
       <nav>
         <RouterLink to="/">Dashboard</RouterLink>
-        <RouterLink to="/todos">Todos</RouterLink>
+        <RouterLink to="/websocket-test">WebSocket Test</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </header>
